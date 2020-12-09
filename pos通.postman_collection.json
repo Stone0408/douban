@@ -1,0 +1,4936 @@
+{
+	"info": {
+		"_postman_id": "0fd1f8d9-dd63-4f4a-895a-c31b90244d35",
+		"name": "pos通",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "获取accessToken",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b06c21c7-8be7-469f-8815-28f1d3c2b748",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳\r",
+							"var d = new Date();\r",
+							"\r",
+							"//将月份组装成2位\r",
+							"var timeMonth = (d.getMonth()+1).toString();\r",
+							"if(timeMonth.length == 1){\r",
+							"    timeMonth = \"0\" + timeMonth;\r",
+							"}\r",
+							"\r",
+							"//将日期组装成2位\r",
+							"var timeDate = d.getDate().toString();\r",
+							"if(timeDate.length == 1){\r",
+							"    timeDate = \"0\" + timeDate;\r",
+							"}\r",
+							"//将小时组装成2位\r",
+							"var timeHour = d.getHours().toString();\r",
+							"if(timeHour.length == 1){\r",
+							"    timeHour = \"0\" + timeHour;\r",
+							"}\r",
+							"//将分钟组装成2位\r",
+							"var timeMin = d.getMinutes().toString();\r",
+							"if(timeMin.length == 1){\r",
+							"    timeMin = \"0\" + timeMin;\r",
+							"}\r",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位\r",
+							"var timeSec = d.getSeconds().toString();\r",
+							"if(timeSec.length == 1){\r",
+							"    timeSec = \"0\" + timeSec;\r",
+							"}\r",
+							"//将毫秒组装成3位\r",
+							"// var timeMilliSec = d.getMilliseconds().toString();\r",
+							"// if(timeMilliSec.length == 1){\r",
+							"//     timeMilliSec = \"00\" + timeMilliSec;\r",
+							"// }\r",
+							"// else if(timeMilliSec.length == 2){\r",
+							"//     timeMilliSec = \"0\" + timeMilliSec;\r",
+							"// }\r",
+							"\r",
+							"var timesDate = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;\r",
+							"\r",
+							"postman.setGlobalVariable(\"appid\", '10037e6f6832b7a901683b7e73fc0002');\r",
+							"postman.setGlobalVariable(\"timestamp\", timesDate);\r",
+							"postman.setGlobalVariable(\"nonce\", '5923d455b2174dbaaae58b0d43a22e3d');\r",
+							"postman.setGlobalVariable(\"appkey\", '89ff5f84d19b4db395b83e1581d25d03');\r",
+							"\r",
+							"//获取全局变量值\r",
+							"appid = postman.getGlobalVariable(\"appid\");\r",
+							"timestamp = postman.getGlobalVariable('timestamp');\r",
+							"nonce = postman.getGlobalVariable(\"nonce\");\r",
+							"appkey = postman.getGlobalVariable(\"appkey\");\r",
+							"\r",
+							"var pytokenstr = appid + timestamp + nonce + appkey;\r",
+							"\r",
+							"postman.setGlobalVariable(\"pytokenstr\",pytokenstr);\r",
+							"\r",
+							"//使用SHA1加密得到pytokenstr\r",
+							"var signature = CryptoJS.SHA1(pytokenstr);\r",
+							"postman.setGlobalVariable('signature',signature);\r",
+							"\r",
+							"signature = postman.getGlobalVariable(\"signature\");\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "7ccb3ce3-5389-4b7a-85d7-a31a862e5233",
+						"exec": [
+							"let json =JSON.parse(responseBody);//将响应报文转换成json格式",
+							"postman.setGlobalVariable(\"accessToken\",json.accessToken);//获取响应报文里面的accessToken的值，可以传入下一个请求 ",
+							"",
+							"//断言",
+							"tests[\"errCode is 0000\"] = json.errCode === \"0000\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"appId\":\"10037e6f6832b7a901683b7e73fc0002\",\n\t\"timestamp\":\"{{timestamp}}\",\n\t\"nonce\":\"{{nonce}}\",\n\t\"signature\":\"{{signature}}\"\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v1/token/access",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v1",
+						"token",
+						"access"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "获取accessToken  银联测试 异步",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "fbdc8c10-8ef5-4294-a7ea-a1933c8e8d07",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳\r",
+							"var d = new Date();\r",
+							"\r",
+							"//将月份组装成2位\r",
+							"var timeMonth = (d.getMonth()+1).toString();\r",
+							"if(timeMonth.length == 1){\r",
+							"    timeMonth = \"0\" + timeMonth;\r",
+							"}\r",
+							"\r",
+							"//将日期组装成2位\r",
+							"var timeDate = d.getDate().toString();\r",
+							"if(timeDate.length == 1){\r",
+							"    timeDate = \"0\" + timeDate;\r",
+							"}\r",
+							"//将小时组装成2位\r",
+							"var timeHour = d.getHours().toString();\r",
+							"if(timeHour.length == 1){\r",
+							"    timeHour = \"0\" + timeHour;\r",
+							"}\r",
+							"//将分钟组装成2位\r",
+							"var timeMin = d.getMinutes().toString();\r",
+							"if(timeMin.length == 1){\r",
+							"    timeMin = \"0\" + timeMin;\r",
+							"}\r",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位\r",
+							"var timeSec = d.getSeconds().toString();\r",
+							"if(timeSec.length == 1){\r",
+							"    timeSec = \"0\" + timeSec;\r",
+							"}\r",
+							"//将毫秒组装成3位\r",
+							"// var timeMilliSec = d.getMilliseconds().toString();\r",
+							"// if(timeMilliSec.length == 1){\r",
+							"//     timeMilliSec = \"00\" + timeMilliSec;\r",
+							"// }\r",
+							"// else if(timeMilliSec.length == 2){\r",
+							"//     timeMilliSec = \"0\" + timeMilliSec;\r",
+							"// }\r",
+							"\r",
+							"var timesDate = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;\r",
+							"\r",
+							"postman.setGlobalVariable(\"appid\", 'f0ec96ad2c3848b5b810e7aadf369e2f');\r",
+							"postman.setGlobalVariable(\"timestamp\", timesDate);\r",
+							"postman.setGlobalVariable(\"nonce\", '654321');\r",
+							"postman.setGlobalVariable(\"appkey\", '775481e2556e4564985f5439a5e6a277');\r",
+							"\r",
+							"//获取全局变量值\r",
+							"appid = postman.getGlobalVariable(\"appid\");\r",
+							"timestamp = postman.getGlobalVariable('timestamp');\r",
+							"nonce = postman.getGlobalVariable(\"nonce\");\r",
+							"appkey = postman.getGlobalVariable(\"appkey\");\r",
+							"\r",
+							"var pytokenstr = appid + timestamp + nonce + appkey;\r",
+							"\r",
+							"postman.setGlobalVariable(\"pytokenstr\",pytokenstr);\r",
+							"\r",
+							"//使用SHA1加密得到pytokenstr\r",
+							"var signature = CryptoJS.SHA1(pytokenstr);\r",
+							"postman.setGlobalVariable('signature',signature);\r",
+							"\r",
+							"signature = postman.getGlobalVariable(\"signature\");\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "cd8afce7-3437-4740-9110-010356843ef0",
+						"exec": [
+							"let json =JSON.parse(responseBody);//将响应报文转换成json格式",
+							"postman.setGlobalVariable(\"accessToken\",json.accessToken);//获取响应报文里面的accessToken的值，可以传入下一个请求 ",
+							"",
+							"//断言",
+							"tests[\"errCode is 0000\"] = json.errCode === \"0000\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n \"appId\":\"f0ec96ad2c3848b5b810e7aadf369e2f\",\r\n \"timestamp\":\"20200413110339\",\r\n \"nonce\":\"11111111\",\r\n \"appkey\":\"775481e2556e4564985f5439a5e6a277\",\r\n \"signature\":\"754424f66268670ec79ad40be98696946a0a89bc\"\r\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v1/token/access",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v1",
+						"token",
+						"access"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "获取accessToken 生产",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "5ad508c9-c837-4022-98f2-ce8200811e9c",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳\r",
+							"var d = new Date();\r",
+							"\r",
+							"//将月份组装成2位\r",
+							"var timeMonth = (d.getMonth()+1).toString();\r",
+							"if(timeMonth.length == 1){\r",
+							"    timeMonth = \"0\" + timeMonth;\r",
+							"}\r",
+							"\r",
+							"//将日期组装成2位\r",
+							"var timeDate = d.getDate().toString();\r",
+							"if(timeDate.length == 1){\r",
+							"    timeDate = \"0\" + timeDate;\r",
+							"}\r",
+							"//将小时组装成2位\r",
+							"var timeHour = d.getHours().toString();\r",
+							"if(timeHour.length == 1){\r",
+							"    timeHour = \"0\" + timeHour;\r",
+							"}\r",
+							"//将分钟组装成2位\r",
+							"var timeMin = d.getMinutes().toString();\r",
+							"if(timeMin.length == 1){\r",
+							"    timeMin = \"0\" + timeMin;\r",
+							"}\r",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位\r",
+							"var timeSec = d.getSeconds().toString();\r",
+							"if(timeSec.length == 1){\r",
+							"    timeSec = \"0\" + timeSec;\r",
+							"}\r",
+							"//将毫秒组装成3位\r",
+							"// var timeMilliSec = d.getMilliseconds().toString();\r",
+							"// if(timeMilliSec.length == 1){\r",
+							"//     timeMilliSec = \"00\" + timeMilliSec;\r",
+							"// }\r",
+							"// else if(timeMilliSec.length == 2){\r",
+							"//     timeMilliSec = \"0\" + timeMilliSec;\r",
+							"// }\r",
+							"\r",
+							"var timesDate = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;\r",
+							"\r",
+							"postman.setGlobalVariable(\"appid\", 'f0ec96ad2c3848b5b810e7aadf369e2f');\r",
+							"postman.setGlobalVariable(\"timestamp\", timesDate);\r",
+							"postman.setGlobalVariable(\"nonce\", '654321');\r",
+							"postman.setGlobalVariable(\"appkey\", '775481e2556e4564985f5439a5e6a277');\r",
+							"\r",
+							"//获取全局变量值\r",
+							"appid = postman.getGlobalVariable(\"appid\");\r",
+							"timestamp = postman.getGlobalVariable('timestamp');\r",
+							"nonce = postman.getGlobalVariable(\"nonce\");\r",
+							"appkey = postman.getGlobalVariable(\"appkey\");\r",
+							"\r",
+							"var pytokenstr = appid + timestamp + nonce + appkey;\r",
+							"\r",
+							"postman.setGlobalVariable(\"pytokenstr\",pytokenstr);\r",
+							"\r",
+							"//使用SHA1加密得到pytokenstr\r",
+							"var signature = CryptoJS.SHA1(pytokenstr);\r",
+							"postman.setGlobalVariable('signature',signature);\r",
+							"\r",
+							"signature = postman.getGlobalVariable(\"signature\");\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "7da755f3-d709-4ad5-a28b-e7893bc70592",
+						"exec": [
+							"let json =JSON.parse(responseBody);//将响应报文转换成json格式",
+							"postman.setGlobalVariable(\"accessToken\",json.accessToken);//获取响应报文里面的accessToken的值，可以传入下一个请求 ",
+							"",
+							"//断言",
+							"tests[\"errCode is 0000\"] = json.errCode === \"0000\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"appId\":\"46938143680ffdf3016882b9d13a0018\",\r\n\"timestamp\":\"20200517121211\",\r\n\"nonce\":\"65433325\",\r\n\"appkey\":\"f427ea43fe684eb4847dfa43dd0a00f8\",\r\n\"signature\":\"e48e33ebf8af42379810ae3fa239faf7cc0d2bb4\"}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api-mop.chinaums.com/v1/token/access",
+					"protocol": "https",
+					"host": [
+						"api-mop",
+						"chinaums",
+						"com"
+					],
+					"path": [
+						"v1",
+						"token",
+						"access"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "获取accessToken 生产 Copy",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "330e6ce4-b8ee-4738-8280-b2f99ede1bd3",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳\r",
+							"var d = new Date();\r",
+							"\r",
+							"//将月份组装成2位\r",
+							"var timeMonth = (d.getMonth()+1).toString();\r",
+							"if(timeMonth.length == 1){\r",
+							"    timeMonth = \"0\" + timeMonth;\r",
+							"}\r",
+							"\r",
+							"//将日期组装成2位\r",
+							"var timeDate = d.getDate().toString();\r",
+							"if(timeDate.length == 1){\r",
+							"    timeDate = \"0\" + timeDate;\r",
+							"}\r",
+							"//将小时组装成2位\r",
+							"var timeHour = d.getHours().toString();\r",
+							"if(timeHour.length == 1){\r",
+							"    timeHour = \"0\" + timeHour;\r",
+							"}\r",
+							"//将分钟组装成2位\r",
+							"var timeMin = d.getMinutes().toString();\r",
+							"if(timeMin.length == 1){\r",
+							"    timeMin = \"0\" + timeMin;\r",
+							"}\r",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位\r",
+							"var timeSec = d.getSeconds().toString();\r",
+							"if(timeSec.length == 1){\r",
+							"    timeSec = \"0\" + timeSec;\r",
+							"}\r",
+							"//将毫秒组装成3位\r",
+							"// var timeMilliSec = d.getMilliseconds().toString();\r",
+							"// if(timeMilliSec.length == 1){\r",
+							"//     timeMilliSec = \"00\" + timeMilliSec;\r",
+							"// }\r",
+							"// else if(timeMilliSec.length == 2){\r",
+							"//     timeMilliSec = \"0\" + timeMilliSec;\r",
+							"// }\r",
+							"\r",
+							"var timesDate = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;\r",
+							"\r",
+							"postman.setGlobalVariable(\"appid\", 'f0ec96ad2c3848b5b810e7aadf369e2f');\r",
+							"postman.setGlobalVariable(\"timestamp\", timesDate);\r",
+							"postman.setGlobalVariable(\"nonce\", '654321');\r",
+							"postman.setGlobalVariable(\"appkey\", '775481e2556e4564985f5439a5e6a277');\r",
+							"\r",
+							"//获取全局变量值\r",
+							"appid = postman.getGlobalVariable(\"appid\");\r",
+							"timestamp = postman.getGlobalVariable('timestamp');\r",
+							"nonce = postman.getGlobalVariable(\"nonce\");\r",
+							"appkey = postman.getGlobalVariable(\"appkey\");\r",
+							"\r",
+							"var pytokenstr = appid + timestamp + nonce + appkey;\r",
+							"\r",
+							"postman.setGlobalVariable(\"pytokenstr\",pytokenstr);\r",
+							"\r",
+							"//使用SHA1加密得到pytokenstr\r",
+							"var signature = CryptoJS.SHA1(pytokenstr);\r",
+							"postman.setGlobalVariable('signature',signature);\r",
+							"\r",
+							"signature = postman.getGlobalVariable(\"signature\");\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "32b5ef29-3b81-4e06-8b84-9add9930fd7b",
+						"exec": [
+							"let json =JSON.parse(responseBody);//将响应报文转换成json格式",
+							"postman.setGlobalVariable(\"accessToken\",json.accessToken);//获取响应报文里面的accessToken的值，可以传入下一个请求 ",
+							"",
+							"//断言",
+							"tests[\"errCode is 0000\"] = json.errCode === \"0000\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"appId\":\"10037e6f6832b7a901683b7e73fc0002\",\n\t\"timestamp\":\"20190114140239\",\n\t\"nonce\":\"5923d455b2174dbaaae58b0d43a22e3d\",\n\t\"signature\":\"a070204663d8ecfe4ec3ecca5edb41110501546d\"\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v1/token/access",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v1",
+						"token",
+						"access"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "激活",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"//断言",
+							"let json = JSON.parse(responseBody);",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"id": "b9f384db-b590-47d6-86a6-e563fb8b41ca"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"merchantCode\":\"{{mchntId}}\",\n  \"terminalCode\":\"{{termId}}\"\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/activeterminal",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"activeterminal"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "银联测试环境token",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "29732ceb-283d-40f5-b7c0-4a00115a406f",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳\r",
+							"var d = new Date();\r",
+							"\r",
+							"//将月份组装成2位\r",
+							"var timeMonth = (d.getMonth()+1).toString();\r",
+							"if(timeMonth.length == 1){\r",
+							"    timeMonth = \"0\" + timeMonth;\r",
+							"}\r",
+							"\r",
+							"//将日期组装成2位\r",
+							"var timeDate = d.getDate().toString();\r",
+							"if(timeDate.length == 1){\r",
+							"    timeDate = \"0\" + timeDate;\r",
+							"}\r",
+							"//将小时组装成2位\r",
+							"var timeHour = d.getHours().toString();\r",
+							"if(timeHour.length == 1){\r",
+							"    timeHour = \"0\" + timeHour;\r",
+							"}\r",
+							"//将分钟组装成2位\r",
+							"var timeMin = d.getMinutes().toString();\r",
+							"if(timeMin.length == 1){\r",
+							"    timeMin = \"0\" + timeMin;\r",
+							"}\r",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位\r",
+							"var timeSec = d.getSeconds().toString();\r",
+							"if(timeSec.length == 1){\r",
+							"    timeSec = \"0\" + timeSec;\r",
+							"}\r",
+							"//将毫秒组装成3位\r",
+							"// var timeMilliSec = d.getMilliseconds().toString();\r",
+							"// if(timeMilliSec.length == 1){\r",
+							"//     timeMilliSec = \"00\" + timeMilliSec;\r",
+							"// }\r",
+							"// else if(timeMilliSec.length == 2){\r",
+							"//     timeMilliSec = \"0\" + timeMilliSec;\r",
+							"// }\r",
+							"\r",
+							"var timesDate = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;\r",
+							"\r",
+							"postman.setGlobalVariable(\"appid\", 'f0ec96ad2c3848b5b810e7aadf369e2f');\r",
+							"postman.setGlobalVariable(\"timestamp\", timesDate);\r",
+							"postman.setGlobalVariable(\"nonce\", '654321');\r",
+							"postman.setGlobalVariable(\"appkey\", '775481e2556e4564985f5439a5e6a277');\r",
+							"\r",
+							"//获取全局变量值\r",
+							"appid = postman.getGlobalVariable(\"appid\");\r",
+							"timestamp = postman.getGlobalVariable('timestamp');\r",
+							"nonce = postman.getGlobalVariable(\"nonce\");\r",
+							"appkey = postman.getGlobalVariable(\"appkey\");\r",
+							"\r",
+							"var pytokenstr = appid + timestamp + nonce + appkey;\r",
+							"\r",
+							"postman.setGlobalVariable(\"pytokenstr\",pytokenstr);\r",
+							"\r",
+							"//使用SHA1加密得到pytokenstr\r",
+							"var signature = CryptoJS.SHA1(pytokenstr);\r",
+							"postman.setGlobalVariable('signature',signature);\r",
+							"\r",
+							"signature = postman.getGlobalVariable(\"signature\");\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "7deba532-6c77-4ddb-ae07-9af23345212e",
+						"exec": [
+							"let json =JSON.parse(responseBody);//将响应报文转换成json格式",
+							"postman.setGlobalVariable(\"accessToken\",json.accessToken);//获取响应报文里面的accessToken的值，可以传入下一个请求 ",
+							"",
+							"//断言",
+							"tests[\"errCode is 0000\"] = json.errCode === \"0000\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"appId\":\"10037e6f6832b7a901683b7e73fc0002\",\n\t\"timestamp\":\"20190114140239\",\n\t\"nonce\":\"5923d455b2174dbaaae58b0d43a22e3d\",\n\t\"signature\":\"a070204663d8ecfe4ec3ecca5edb41110501546d\"\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v1/token/access",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v1",
+						"token",
+						"access"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "银联测试环境-单品",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "7c80bcbf-cac9-4efd-a664-f536aa874c54",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesTag = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为merchantOrderId使用",
+							"postman.setGlobalVariable(\"mchntOrderId\", timesTag);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "24483f2d-735e-4a94-b8c2-8ae54f4d047c",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"chexiao_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"tuihuo_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.transactionAmount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"{{mchntId}}\",\n\t\"terminalCode\":\"{{termId}}\",\n\t\"transactionAmount\":\"3\",\n\t\"transactionCurrencyCode\":\"156\",\n\t\"merchantOrderId\":\"11178788864\",\n\t\"merchantRemark\":\"11111111111111111111111133333333\",\n\t\"payMode\":\"MANUAL\",\n\t\"payCode\":\"134525799116332155\",\n\t\"goods\": [{\"quantity\": 1,\"goodsId\": \"Costa188\",\"price\": 3,\"goodsName\": \"A\"}]\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/pay",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"pay"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费（有冲正） 单品 微信",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "7f7f929c-9272-4c1b-80b2-b5520aa811ab",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesTag = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为merchantOrderId使用",
+							"postman.setGlobalVariable(\"mchntOrderId\", timesTag);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "26b73965-acc1-4974-866a-215183a747af",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"chexiao_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"tuihuo_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.transactionAmount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"WXYHCEH20181115\",\n\t\"terminalCode\":\"88880001\",\n\t\"transactionAmount\":\"150\",\n\t\"transactionCurrencyCode\":\"156\",\n\t\"merchantOrderId\":\"8333993906\",\n\t\"merchantRemark\":\"11111111111111111111111133333333\",\n\t\"payMode\":\"MANUAL\",\n\t\"payCode\":\"134834574283977439\",\n\t\"goods\": [{\"quantity\": 1,\"goodsId\": \"555222\",\"price\": 103,\"goodsName\": \"A\"}]\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/pay",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"pay"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费（有冲正） 单品",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ed24fdd8-88b5-4adb-b6ba-1c85fc008edf",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesTag = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为merchantOrderId使用",
+							"postman.setGlobalVariable(\"mchntOrderId\", timesTag);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "708fdeeb-584d-4ed4-9352-5a164a81ed95",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"chexiao_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"tuihuo_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.transactionAmount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"898310173990206\",\n\t\"terminalCode\":\"70022735\",\n\t\"transactionAmount\":\"4\",\n\t\"transactionCurrencyCode\":\"156\",\n\t\"merchantOrderId\":\"151888129\",\n\t\"merchantRemark\":\"11111111111111111111111133333333\",\n\t\"payMode\":\"MANUAL\",\n\t\"payCode\":\"134743311387738944\",\n\t\"goods\": [{\"quantity\": 1,\"goodsId\": \"33333\",\"price\": 2,\"goodsName\": \"A\"},{\"quantity\": 1,\"goodsId\": \"11111\",\"price\": 2,\"goodsName\": \"A\"}]\n}"
+				},
+				"url": {
+					"raw": "https://api-mop.chinaums.com/v2/poslink/transaction/pay",
+					"protocol": "https",
+					"host": [
+						"api-mop",
+						"chinaums",
+						"com"
+					],
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"pay"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费（有冲正） 单品  银联异步",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "816b15be-b26f-4f17-aa40-062659e82bc1",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesTag = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为merchantOrderId使用",
+							"postman.setGlobalVariable(\"mchntOrderId\", timesTag);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "9ac7e8b0-aced-4d29-ba76-29dba6cbb346",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"chexiao_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"tuihuo_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.transactionAmount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\t\"merchantCode\":\"WXYHCEH20181115\",\n\t\"terminalCode\":\"88880001\",\n\n\n\t\"transactionAmount\":\"4\",\n\t\"transactionCurrencyCode\":\"156\",\n\t\"merchantOrderId\":\"110781899177\",\n\t\"merchantRemark\":\"11111111111111111111111133333333\",\n\t\"payMode\":\"MANUAL\",\n\t\"payCode\":\"281666234952288907\",\n\t\"goods\":[{\"quantity\": 1,\"goodsId\": \"123456789\",\"price\":1,\"goodsName\": \"A\"},{\"quantity\": 1,\"goodsId\": \"987654321\",\"price\":1,\"goodsName\": \"A\"}]} "
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/pay",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"pay"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "银联单品  银联同步",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "0ee27e4b-e99f-42fc-8501-9a1e1790b0a1",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesTag = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为merchantOrderId使用",
+							"postman.setGlobalVariable(\"mchntOrderId\", timesTag);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "0eba41e0-674a-4297-a79f-b2b1986d5bcc",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"chexiao_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"tuihuo_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.transactionAmount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"123456789012345\",\n\t\"terminalCode\":\"12341234\",\n\t\"transactionAmount\":\"800\",\n\t\"transactionCurrencyCode\":\"156\",\n\t\"merchantOrderId\":\"11178898866\",\n\t\"merchantRemark\":\"11111111111111111111111133333333\",\n\t\"payMode\":\"MANUAL\",\n\t\"payCode\":\"6223941497779233036\",\n\t\"goods\": [{\"quantity\": 1,\"goodsId\": \"testsp000005\",\"price\": 600,\"goodsName\": \"A\"},{\"quantity\": 1,\"goodsId\": \"testsp000011\",\"price\": 200,\"goodsName\": \"A\"}]\n} "
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/pay",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"pay"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费（有冲正） 非单品",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "cebeb578-5377-4a91-b164-7e4cda289929",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesTag = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为merchantOrderId使用",
+							"postman.setGlobalVariable(\"mchntOrderId\", timesTag);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "43a23675-0d67-4755-a4ee-76e845ca5ea6",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"chexiao_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"tuihuo_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.transactionAmount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"WXYHCEH20181115\",\n\t\"terminalCode\":\"88880001\",\n\t\"transactionAmount\":\"501\",\n\t\"transactionCurrencyCode\":\"156\",\n\t\"merchantOrderId\":\"111888013\",\n\t\"merchantRemark\":\"11111111111111111111111133333333\",\n\t\"payMode\":\"MANUAL\",\n\t\"payCode\":\"134817549460928427\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/pay",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"pay"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费（有冲正） 生产 单品",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8ebe1a91-8f40-4701-85a4-b8d76842a6dc",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesTag = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为merchantOrderId使用",
+							"postman.setGlobalVariable(\"mchntOrderId\", timesTag);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "fadf2650-6a21-45c9-a805-af19616abe2a",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"chexiao_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"tuihuo_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.transactionAmount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"898310173990206\",\n\t\"terminalCode\":\"70022735\",\n\t\"transactionAmount\":\"5\",\n\t\"transactionCurrencyCode\":\"156\",\n\t\"merchantOrderId\":\"8333993985\",\n\t\"merchantRemark\":\"11111111111111111111111133333333\",\n\t\"payMode\":\"MANUAL\",\n\t\"payCode\":\"134808376910633677\",\n\t\"goods\": [{\"quantity\": 1,\"goodsId\": \"222555\",\"price\": 1,\"goodsName\": \"A\"}]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api-mop.chinaums.com/v2/poslink/transaction/pay",
+					"protocol": "https",
+					"host": [
+						"api-mop",
+						"chinaums",
+						"com"
+					],
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"pay"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费（有冲正） 生产 单品 微信",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "4c91efb0-811a-4e45-b0db-5da8eae33783",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesTag = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为merchantOrderId使用",
+							"postman.setGlobalVariable(\"mchntOrderId\", timesTag);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d24d2a9d-1521-4d1a-b9ff-907d4d065489",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"chexiao_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"tuihuo_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.transactionAmount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"merchantCode\":\"898310173990206\",\n\t\"terminalCode\":\"70022735\",\n\t\"transactionAmount\":\"310\",\n\t\"transactionCurrencyCode\":\"156\",\n    \"merchantOrderId\":\"833399467\",\n    \"merchantRemark\":\"11111111111111111111111133333333\",\n\t\"payMode\":\"MANUAL\",\n\t\"payCode\":\"134849582888483894\",\n\t\"goods\": [{\"quantity\": 1,\"goodsId\": \"1100033\",\"price\": 10,\"goodsName\": \"A\"}]\n}"
+				},
+				"url": {
+					"raw": "https://api-mop.chinaums.com/v2/poslink/transaction/pay",
+					"protocol": "https",
+					"host": [
+						"api-mop",
+						"chinaums",
+						"com"
+					],
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"pay"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费（有冲正） 生产 单品 银联",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "446fefd9-e940-476f-ac41-5d7b4fcb735f",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesTag = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为merchantOrderId使用",
+							"postman.setGlobalVariable(\"mchntOrderId\", timesTag);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d587a305-28d9-4225-91a9-b4b560e65eef",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"chexiao_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"tuihuo_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.transactionAmount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"898310173990206\",\n\t\"terminalCode\":\"70022735\",\n\t\"transactionAmount\":\"4\",\n\t\"transactionCurrencyCode\":\"156\",\n\t\"merchantOrderId\":\"8333994002\",\n\t\"merchantRemark\":\"11111111111111111111111133333333\",\n\t\"payMode\":\"MANUAL\",\n\t\"payCode\":\"6262683734442988382\",\n\t\"goods\": [{\"quantity\": 2,\"goodsId\": \"10103031\",\"price\": 2,\"goodsName\": \"A\"}]\n}"
+				},
+				"url": {
+					"raw": "https://api-mop.chinaums.com/v2/poslink/transaction/pay",
+					"protocol": "https",
+					"host": [
+						"api-mop",
+						"chinaums",
+						"com"
+					],
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"pay"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费（有冲正） 生产 非单品",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "4cfc7ea8-c116-4745-b100-ca164f9ebda4",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesTag = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为merchantOrderId使用",
+							"postman.setGlobalVariable(\"mchntOrderId\", timesTag);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "8463a6f1-d660-4f98-aaef-f24476d43d7f",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"chexiao_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"tuihuo_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.transactionAmount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"898310173990206\",\n\t\"terminalCode\":\"70022735\",\n\t\"transactionAmount\":\"4\",\n\t\"transactionCurrencyCode\":\"156\",\n\t\"merchantOrderId\":\"8333996008\",\n\t\"merchantRemark\":\"11111111111111111111111133333333\",\n\t\"payMode\":\"MANUAL\",\n\t\"payCode\":\"6222314924075556652\"\n}"
+				},
+				"url": {
+					"raw": "https://api-mop.chinaums.com/v2/poslink/transaction/pay",
+					"protocol": "https",
+					"host": [
+						"api-mop",
+						"chinaums",
+						"com"
+					],
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"pay"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费（有冲正） Copy lmcode",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "a5523079-8f50-4203-b181-bc7084e3539e",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesTag = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为merchantOrderId使用",
+							"postman.setGlobalVariable(\"mchntOrderId\", timesTag);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "4b5048ac-cf37-434b-8a07-d435566c7b37",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"chexiao_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"tuihuo_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.transactionAmount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"{{mchntId}}\",\n\t\"terminalCode\":\"{{termId}}\",\n\t\"transactionAmount\":\"3\",\n\t\"transactionCurrencyCode\":\"156\",\n\t\"merchantOrderId\":\"1333993621\",\n\t\"merchantRemark\":\"11111111111111111111111133333333\",\n\t\"payMode\":\"MANUAL\",\n\t\"payCode\":\"6611609774546788\",\n\t\"goods\": [{\"quantity\": 1,\"goodsId\": \"CostaBig1\",\"price\": 3,\"goodsName\": \"A\"}]\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/pay",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"pay"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费（有冲正） Copy lmcode 生产",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "a561d9a3-7261-44b5-b270-e0cfff7859b1",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesTag = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为merchantOrderId使用",
+							"postman.setGlobalVariable(\"mchntOrderId\", timesTag);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "50183948-b686-46e4-8d2b-195c079a945c",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"chexiao_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"tuihuo_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.transactionAmount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"898310173990206\",\n\t\"terminalCode\":\"70022735\",\n\t\"transactionAmount\":\"3\",\n\t\"transactionCurrencyCode\":\"156\",\n\t\"merchantOrderId\":\"1333993588\",\n\t\"merchantRemark\":\"11111111111111111111111133333333\",\n\t\"payMode\":\"MANUAL\",\n\t\"payCode\":\"6611885668435946\",\n\t\"goods\": [{\"quantity\": 1,\"goodsId\": \"CostaBig1\",\"price\": 3,\"goodsName\": \"A\"}]\n}"
+				},
+				"url": {
+					"raw": "https://api-mop.chinaums.com/v2/poslink/transaction/pay",
+					"protocol": "https",
+					"host": [
+						"api-mop",
+						"chinaums",
+						"com"
+					],
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"pay"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费（无冲正） Copy",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ae3c0cc5-d5d7-4adf-bda7-9358a4640725",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesTag = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为merchantOrderId使用",
+							"postman.setGlobalVariable(\"mchntOrderId\", timesTag);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "37f6d439-3c50-48cb-8744-3a1e0e87a274",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"chexiao_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"tuihuo_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.amount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"{{mchntId}}\",\n\t\"terminalCode\":\"{{termId}}\",\n\t\"transactionAmount\":\"1\",\n\t\"transactionCurrencyCode\":\"156\",\n\t\"merchantOrderId\":\"{{mchntOrderId}}\",\n\t\"merchantRemark\":\"11111111111111111111111133333333\",\n\t\"payMode\":\"MANUAL\",\n\t\"invocationMode\":\"POLL\",\n\t\"payCode\":\"284032509779398154\"\n\t\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v3/poslink/transaction/pay",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v3",
+						"poslink",
+						"transaction",
+						"pay"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费（无冲正） Copy Copy",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "a48b076a-c1a0-4f53-9555-81b1ea76ce68",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesTag = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为merchantOrderId使用",
+							"postman.setGlobalVariable(\"mchntOrderId\", timesTag);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "07c79123-f951-4b14-a0f7-834dee65132e",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"chexiao_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"tuihuo_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.amount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"{{mchntId}}\",\n\t\"terminalCode\":\"{{termId}}\",\n\t\"transactionAmount\":\"1\",\n\t\"transactionCurrencyCode\":\"156\",\n\t\"merchantOrderId\":\"{{mchntOrderId}}\",\n\t\"merchantRemark\":\"11111111111111111111111133333333\",\n\t\"payMode\":\"MANUAL\",\n\t\"invocationMode\":\"POLL\",\n\t\"payCode\":\"284032509779398154\"\n\t\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v3/poslink/transaction/pay",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v3",
+						"poslink",
+						"transaction",
+						"pay"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费（有冲正） 错误付款码",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "1c46a62e-e05a-4dcd-9872-5cd3b3bd9e50",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesTag = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为merchantOrderId使用",
+							"postman.setGlobalVariable(\"mchntOrderId\", timesTag);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "c5f7a7cf-9539-46b4-9319-4aa1f292c30b",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"",
+							"",
+							"//断言",
+							"tests[\"errCode is ER\"] = json.errCode === \"ER\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"{{mchntId}}\",\n\t\"terminalCode\":\"{{termId}}\",\n\t\"transactionAmount\":\"1\",\n\t\"transactionCurrencyCode\":\"156\",\n\t\"merchantOrderId\":\"{{mchntOrderId}}\",\n\t\"merchantRemark\":\"11111111111111111111111133333333\",\n\t\"payMode\":\"MANUAL\",\n\t\"payCode\":\"134699243773938827\"\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/pay",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"pay"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POS通交易状态查询",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "27279060-161a-48cd-b775-d36183b0c818",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"123456789012345\",\n\t\"terminalCode\":\"12341234\",\n\t\"merchantOrderId\":\"11178788959\",\n\t\"originalOrderId\":\"20200414163202000031358016\"\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/query",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"query"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POS通交易状态查询 （订单号）",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "442a6469-af94-4efe-8d93-18de85038740",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"{{mchntId}}\",\n\t\"terminalCode\":\"{{termId}}\",\n\t\"originalOrderId\":\"{{chexiao_orderId}}\"\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/query",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"query"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POS通交易状态查询 （商户号）",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "de63b296-73d0-4d29-8917-5436076914e3",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"{{mchntId}}\",\n\t\"terminalCode\":\"{{termId}}\",\n\t\"merchantOrderId\":\"{{mchntOrderId}}\"\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/query",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"query"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POS通交易状态深查询",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"id": "53a9d777-602f-45aa-9450-9b92e479e44e"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"{{mchntId}}\",\n\t\"terminalCode\":\"{{termId}}\",\n\t\"merchantOrderId\":\"{{mchntOrderId}}\",\n\t\"originalOrderId\":\"{{chexiao_orderId}}\"\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v3/poslink/transaction/query",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v3",
+						"poslink",
+						"transaction",
+						"query"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "冲正",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9cf14fbb-722e-49b5-8fba-8704c4a0a826",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"{{mchntId}}\",\n\t\"terminalCode\":\"{{termId}}\",\n\t\"transactionAmount\":\"160\",\n\t\"transactionCurrencyCode\":\"156\",\n\t\"merchantOrderId\":\"141888039\"\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/reversepayment",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"reversepayment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "冲正 Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "76335c8e-12b2-46b6-80e1-e854e7e0bae6",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"123456789012345\",\n\t\"terminalCode\":\"12341234\",\n\t\"transactionAmount\":\"481600\",\n\t\"transactionCurrencyCode\":\"156\",\n\t\"merchantOrderId\":\"11178788957\"\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/reversepayment",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"reversepayment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "冲正 银联单品",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b3351c26-e896-46c1-a85c-63f5df5abbe1",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"123456789012345\",\n\t\"terminalCode\":\"12341234\",\n\t\"transactionAmount\":\"2600\",\n\t\"transactionCurrencyCode\":\"156\",\n\t\"merchantOrderId\":\"1117888929\"\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/reversepayment",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"reversepayment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "冲正 生产",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "aff6a9b8-2357-40e8-827c-6c4379cedc21",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"898310173990206\",\n\t\"terminalCode\":\"70022735\",\n\t\"transactionAmount\":\"12\",\n\t\"transactionCurrencyCode\":\"156\",\n\t\"merchantOrderId\":\"8333993959\"\n}"
+				},
+				"url": {
+					"raw": "https://api-mop.chinaums.com/v2/poslink/transaction/reversepayment",
+					"protocol": "https",
+					"host": [
+						"api-mop",
+						"chinaums",
+						"com"
+					],
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"reversepayment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费撤销 （错误银商订单号）",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"",
+							"//断言",
+							"tests[\"errCode is 25\"] = json.errCode === \"25\";"
+						],
+						"id": "727f5175-16cd-4b8f-a38f-8ad4ca59fd63"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"{{mchntId}}\",\n\t\"terminalCode\":\"{{termId}}\",\n\t\"originalOrderId\":\"20180528180900000000000000\"\n\t\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/voidpayment",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"voidpayment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费撤销",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "26739f12-1e29-4bbc-b651-9f0d9224baa9",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"898310173990206\",\n\t\"terminalCode\":\"70022735\",\n\t\"originalOrderId\":\"20200507184051013904105719\"\n\t\n}"
+				},
+				"url": {
+					"raw": "http://api-mop.chinaums.com/v2/poslink/transaction/voidpayment",
+					"protocol": "http",
+					"host": [
+						"api-mop",
+						"chinaums",
+						"com"
+					],
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"voidpayment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "银联测试环境撤销-单品",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "51a983c0-1ce8-4181-8ba6-e3d105fcab9a",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"WXYHCEH20181115\",\n\t\"terminalCode\":\"88880001\",\n\t\"originalOrderId\":\"20200413172644000031329594\"\n\t\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/voidpayment",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"voidpayment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费撤销   银联单品",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "dfd935a9-33f6-432a-a5f5-8dde7e589e1f",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"123456789012345\",\n\t\"terminalCode\":\"12345678\",\n\t\"originalOrderId\":\"20191025111721100007589323\"\n\t\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/voidpayment",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"voidpayment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费撤销 生产",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a0cac06a-b5b0-4ad6-9ac0-4aaedf280860",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"898310173990206\",\n\t\"terminalCode\":\"70022735\",\n\t\"originalOrderId\":\"20200507143933013901624686\"\n\t\n}"
+				},
+				"url": {
+					"raw": "https://api-mop.chinaums.com/v2/poslink/transaction/voidpayment",
+					"protocol": "https",
+					"host": [
+						"api-mop",
+						"chinaums",
+						"com"
+					],
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"voidpayment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费撤销 (撤销之后做撤销）",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"",
+							"//断言",
+							"tests[\"errCode is 22\"] = json.errCode === \"22\";"
+						],
+						"id": "5c368a0b-12f9-454c-bab4-1374741e1073"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"{{mchntId}}\",\n\t\"terminalCode\":\"{{termId}}\",\n\t\"originalOrderId\":\"{{chexiao_orderId}}\"\n\t\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/voidpayment",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"voidpayment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费退货 （撤销之后做退货）",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesDate = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为refundRequestId使用",
+							"postman.setGlobalVariable(\"refundRequestId\", timesDate);"
+						],
+						"id": "777589cb-787a-4c36-852e-ca2732a8332e"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.amount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 22\"] = json.errCode === \"22\";"
+						],
+						"id": "9070fedc-a127-49a2-9e16-18f5d0fd49b4"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"{{mchntId}}\",\n\t\"terminalCode\":\"{{termId}}\",\n\t\"merchantOrderId\":\"{{chexiao_tuihuo_mchntOrderId}}\",\n\t\"refundRequestId\":\"{{refundRequestId}}\",\n\t\"transactionAmount\":1 \n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/refund",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"refund"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费退货 （错误商户订单号）",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesDate = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为refundRequestId使用",
+							"postman.setGlobalVariable(\"refundRequestId\", timesDate);"
+						],
+						"id": "49c59ea6-6863-44c4-b6b2-f9d89af4f9b7"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.amount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 22\"] = json.errCode === \"22\";"
+						],
+						"id": "46f878c7-608e-48d7-b067-119a613f676f"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"{{mchntId}}\",\n\t\"terminalCode\":\"{{termId}}\",\n\t\"merchantOrderId\":\"20180614091234\",\n\t\"refundRequestId\":\"{{refundRequestId}}\",\n\t\"transactionAmount\":1 \n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/refund",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"refund"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费退货 （错误银商订单号）",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "53076bda-5498-44c5-87e6-8aea27760686",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesDate = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为refundRequestId使用",
+							"postman.setGlobalVariable(\"refundRequestId\", timesDate);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d97607b6-671b-4a8e-9597-ee74424d36a8",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.amount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 25\"] = json.errCode === \"25\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"{{mchntId}}\",\n\t\"terminalCode\":\"{{termId}}\",\n\t\"originalOrderId\":\"20181129173811100005460000\",\n\t\"refundRequestId\":\"{{refundRequestId}}\",\n\t\"transactionAmount\":1 \n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/refund",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"refund"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费退货 （超额退货）",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesDate = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为refundRequestId使用",
+							"postman.setGlobalVariable(\"refundRequestId\", timesDate);"
+						],
+						"id": "5dad6908-fa40-45cf-8027-bd1995d27e8e"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.amount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"id": "99263e7c-330e-4bee-9561-f1539ba65759"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"{{mchntId}}\",\n\t\"terminalCode\":\"{{termId}}\",\n\t\"merchantOrderId\":\"{{mchntOrderId}}\",\n\t\"originalOrderId\":\"{{tuihuo_orderId}}\",\n\t\"refundRequestId\":\"{{refundRequestId}}\",\n\t\"transactionAmount\":5\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/refund",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"refund"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "银联测试环境退货-单品",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e53c480a-91a6-401d-a56c-5f8b3ccd652f",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesDate = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为refundRequestId使用",
+							"postman.setGlobalVariable(\"refundRequestId\", timesDate);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "5258d6a5-b671-46bd-a1e4-06854b23b42e",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"tuihuo_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.amount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"merchantCode\":\"911000000000000\",\n\t\"terminalCode\":\"00000911\",\n\t\"merchantOrderId\":\"1107818991453\",\n\t\"originalOrderId\":\"20200401143858000030963690\",\n\t\"refundRequestId\":\"{{refundRequestId}}\",\n\t\"transactionAmount\":100\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/refund",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"refund"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费退货 Copy",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ef1e0291-50d5-4488-b127-de529397b65a",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesDate = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为refundRequestId使用",
+							"postman.setGlobalVariable(\"refundRequestId\", timesDate);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "6d4c231b-30c7-42bd-86bf-90737b3f1235",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"tuihuo_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.amount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"{{mchntId}}\",\n\t\"terminalCode\":\"{{termId}}\",\n\t\"merchantOrderId\":\"11178888929\",\n\t\"originalOrderId\":\"20190926111117100007817102\",\n\t\"refundRequestId\":\"{{refundRequestId}}\",\n\t\"transactionAmount\":7 \n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/refund",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"refund"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费退货 测试 单品",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "f9a75208-104b-4793-877b-2cca3a389a4d",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesDate = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为refundRequestId使用",
+							"postman.setGlobalVariable(\"refundRequestId\", timesDate);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "adb33080-1ef2-459a-a9c7-cffa7939a726",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"tuihuo_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.amount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"{{mchntId}}\",\n\t\"terminalCode\":\"{{termId}}\",\n\t\"merchantOrderId\":\"11178888935\",\n\t\"originalOrderId\":\"20191021152635000024698576\",\n\t\"refundRequestId\":\"{{refundRequestId}}\",\n\t\"transactionAmount\":203,\n\t\"goods\": [{\"quantity\": 1,\"goodsId\": \"555222\",\"price\": 103,\"goodsName\": \"A\"}]\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/refund",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"refund"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费退货 测试 银联单品",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "198c3723-b27c-4be2-9fb6-b2d3a5ef00c4",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesDate = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为refundRequestId使用",
+							"postman.setGlobalVariable(\"refundRequestId\", timesDate);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "6fbc1892-612b-46de-b27f-6bf2a94bfdbb",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"tuihuo_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.amount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\n\t\"merchantCode\":\"123456789012345\",\n\t\"terminalCode\":\"12345678\",\n\t\"merchantOrderId\":\"8333993910\",\n\t\"originalOrderId\":\"20191023132829012035193674\",\n\t\"refundRequestId\":\"{{refundRequestId}}\",\n\t\"transactionAmount\":5\n\t\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/refund",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"refund"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费退货    生产",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "0e139a92-5d53-4b73-9901-4ada1f9471db",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesDate = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为refundRequestId使用",
+							"postman.setGlobalVariable(\"refundRequestId\", timesDate);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d3100cca-f554-4950-a514-759bb057dea1",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"tuihuo_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.amount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"898310173990206\",\n\t\"terminalCode\":\"70022735\",\n\t\"merchantOrderId\":\"{{mchntOrderId}}\",\n\t\"originalOrderId\":\"20190612165812010363971745\",\n\t\"refundRequestId\":\"{{refundRequestId}}\",\n\t\"transactionAmount\":5\n}"
+				},
+				"url": {
+					"raw": "https://api-mop.chinaums.com/v2/poslink/transaction/refund",
+					"protocol": "https",
+					"host": [
+						"api-mop",
+						"chinaums",
+						"com"
+					],
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"refund"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费退货    生产 Copy",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "bc1b61bd-1d2d-4e07-945f-18fb07afcf6e",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesDate = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为refundRequestId使用",
+							"postman.setGlobalVariable(\"refundRequestId\", timesDate);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "bd08844b-15d9-40c0-a72a-94d90a428cc7",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"tuihuo_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.amount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"898310173990206\",\n\t\"terminalCode\":\"70022735\",\n\t\"merchantOrderId\":\"8333996004\",\n\t\"originalOrderId\":\"20190912101812011527859722\",\n\t\"refundRequestId\":\"{{refundRequestId}}\",\n\t\"transactionAmount\":101\n}"
+				},
+				"url": {
+					"raw": "https://api-mop.chinaums.com/v2/poslink/transaction/refund",
+					"protocol": "https",
+					"host": [
+						"api-mop",
+						"chinaums",
+						"com"
+					],
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"refund"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费退货    生产 单品",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "558cd49c-888b-4e66-871b-9ed6c94eae86",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesDate = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为refundRequestId使用",
+							"postman.setGlobalVariable(\"refundRequestId\", timesDate);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d31fad8e-0c55-4608-b775-613237a35969",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"tuihuo_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.amount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"898310173990206\",\n\t\"terminalCode\":\"70022735\",\n\t\"merchantOrderId\":\"8333993979\",\n\t\"originalOrderId\":\"20191025113104012056869704\",\n\t\"refundRequestId\":\"{{refundRequestId}}\",\n\t\"transactionAmount\":10\n\n}"
+				},
+				"url": {
+					"raw": "https://api-mop.chinaums.com/v2/poslink/transaction/refund",
+					"protocol": "https",
+					"host": [
+						"api-mop",
+						"chinaums",
+						"com"
+					],
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"refund"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费退货（商户订单号）",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "6b29cef3-dc3c-4f00-8ab0-6c4063c5cb7e",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesDate = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为refundRequestId使用",
+							"postman.setGlobalVariable(\"refundRequestId\", timesDate);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "ced1f4c6-b4f9-4ab1-b9ce-ebd35ea53ebe",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"tuihuo_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.amount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"{{mchntId}}\",\n\t\"terminalCode\":\"{{termId}}\",\n\t\"merchantOrderId\":\"{{mchntOrderId}}\",\n\t\"refundRequestId\":\"{{refundRequestId}}\",\n\t\"transactionAmount\":1\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/refund",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"refund"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费退货（银商订单号）",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ff89938f-8717-41bb-9967-12ae985ca57d",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesDate = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为refundRequestId使用",
+							"postman.setGlobalVariable(\"refundRequestId\", timesDate);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "78d7ac76-2c10-4962-8d22-b337d2f52fbc",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"amount\",json.amount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"{{mchntId}}\",\n\t\"terminalCode\":\"{{termId}}\",\n\t\"originalOrderId\":\"{{tuihuo_orderId}}\",\n\t\"refundRequestId\":\"{{refundRequestId}}\",\n\t\"transactionAmount\":1\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/refund",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"refund"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费退货（退货之后做退货）",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "2b7888f6-1b83-4848-8357-181351c469c1",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesDate = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为refundRequestId使用",
+							"postman.setGlobalVariable(\"refundRequestId\", timesDate);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "e176dfb5-22b9-4843-84f5-d9c32fd5ebdf",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.amount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 61\"] = json.errCode === \"61\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"{{mchntId}}\",\n\t\"terminalCode\":\"{{termId}}\",\n\t\"merchantOrderId\":\"{{mchntOrderId}}\",\n\t\"refundRequestId\":\"{{refundRequestId}}\",\n\t\"transactionAmount\":3\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/refund",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"refund"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费撤销（退货之后做撤销）",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"",
+							"//断言",
+							"tests[\"errCode is 22\"] = json.errCode === \"22\";"
+						],
+						"id": "7d6f41ad-39ba-410e-a44e-212ee364bd32"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"{{mchntId}}\",\n\t\"terminalCode\":\"{{termId}}\",\n\t\"originalOrderId\":\"{{chexiao_orderId}}\"\n\t\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/voidpayment",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"voidpayment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费退货 （部分退货）",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesDate = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为refundRequestId使用",
+							"postman.setGlobalVariable(\"refundRequestId\", timesDate);"
+						],
+						"id": "38a17329-0143-44d7-ac66-b90bb80ef9d2"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.amount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"id": "2b81636b-0f42-4757-bd64-94547c6cd9f8"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"{{mchntId}}\",\n\t\"terminalCode\":\"{{termId}}\",\n\t\"merchantOrderId\":\"{{mchntOrderId}}\",\n\t\"originalOrderId\":\"{{tuihuo_orderId}}\",\n\t\"refundRequestId\":\"{{refundRequestId}}\",\n\t\"transactionAmount\":1 \n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/refund",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"refund"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费退货 （部分超额退货）",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesDate = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为refundRequestId使用",
+							"postman.setGlobalVariable(\"refundRequestId\", timesDate);"
+						],
+						"id": "4ad662e1-8354-49cb-bd22-40a068f35b5f"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.amount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 61\"] = json.errCode === \"61\";"
+						],
+						"id": "adc62283-7b44-448f-85f1-c5af66eb1603"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"{{mchntId}}\",\n\t\"terminalCode\":\"{{termId}}\",\n\t\"merchantOrderId\":\"{{mchntOrderId}}\",\n\t\"originalOrderId\":\"{{tuihuo_orderId}}\",\n\t\"refundRequestId\":\"{{refundRequestId}}\",\n\t\"transactionAmount\":4\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/refund",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"refund"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费退货 （多次部分退货） ",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesDate = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为refundRequestId使用",
+							"postman.setGlobalVariable(\"refundRequestId\", timesDate);"
+						],
+						"id": "d8498a04-b6d1-4de2-8afe-cd41220dee44"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.amount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"id": "a9ec69b9-6de9-4649-ba85-443f0ea50ac4"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"{{mchntId}}\",\n\t\"terminalCode\":\"{{termId}}\",\n\t\"merchantOrderId\":\"{{mchntOrderId}}\",\n\t\"originalOrderId\":\"{{tuihuo_orderId}}\",\n\t\"refundRequestId\":\"{{refundRequestId}}\",\n\t\"transactionAmount\":1 \n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/refund",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"refund"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "缴费退货 copy",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesDate = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为refundRequestId使用",
+							"postman.setGlobalVariable(\"refundRequestId\", timesDate);"
+						],
+						"id": "ce25006f-d8aa-432c-9543-323f5eb8a84f"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"tuihuo_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.amount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"id": "d64058f8-f7a8-4778-bd1f-91e6c8bda2ca"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantCode\":\"{{mchntId}}\",\n\t\"terminalCode\":\"{{termId}}\",\n\t\"merchantOrderId\":\"{{mchntOrderId}}\",\n\t\"originalOrderId\":\"20180724172044000005206082\",\n\t\"refundRequestId\":\"{{refundRequestId}}\",\n\t\"transactionAmount\":1\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/refund",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"refund"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "银联测试环境退货-单品",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "2e81f3a6-e7ae-4639-b5fe-ce5067242c3c",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesDate = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为refundRequestId使用",
+							"postman.setGlobalVariable(\"refundRequestId\", timesDate);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "a81202dc-71c8-4e0b-b935-e576fe17c38d",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"tuihuo_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.amount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"merchantCode\":\"911000000000000\",\n\t\"terminalCode\":\"00000911\",\n\t\"merchantOrderId\":\"1107818991453\",\n\t\"originalOrderId\":\"20200401143858000030963690\",\n\t\"refundRequestId\":\"{{refundRequestId}}\",\n\t\"transactionAmount\":100\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/refund",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"refund"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "银联测试环境退货-单品 Copy",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c9eb30c4-d09a-4698-8cd3-70bc42dabea8",
+						"exec": [
+							"//获取系统当前时间，并组装成固定格式时间戳",
+							"var d = new Date();",
+							"",
+							"//将月份组装成2位",
+							"var timeMonth = (d.getMonth()+1).toString();",
+							"if(timeMonth.length == 1){",
+							"    timeMonth = \"0\" + timeMonth;",
+							"}",
+							"",
+							"//将日期组装成2位",
+							"var timeDate = d.getDate().toString();",
+							"if(timeDate.length == 1){",
+							"    timeDate = \"0\" + timeDate;",
+							"}",
+							"//将小时组装成2位",
+							"var timeHour = d.getHours().toString();",
+							"if(timeHour.length == 1){",
+							"    timeHour = \"0\" + timeHour;",
+							"}",
+							"//将分钟组装成2位",
+							"var timeMin = d.getMinutes().toString();",
+							"if(timeMin.length == 1){",
+							"    timeMin = \"0\" + timeMin;",
+							"}",
+							"//将秒组装成3位，文档和实际接口中毫秒没有用到，但秒那部分显示成用3位",
+							"var timeSec = d.getSeconds().toString();",
+							"if(timeSec.length == 1){",
+							"    timeSec = \"0\" + timeSec;",
+							"}",
+							"",
+							"//组装当前时间为商户订单号并放入timestamp中",
+							"var timesDate = d.getFullYear() + timeMonth + timeDate + timeHour + timeMin + timeSec;",
+							"",
+							"//更新timestamp作为refundRequestId使用",
+							"postman.setGlobalVariable(\"refundRequestId\", timesDate);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "bb534fdb-efd3-4c44-af6f-89e710088d48",
+						"exec": [
+							"let json=JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"tuihuo_orderId\",json.orderId);//取银商订单号",
+							"postman.setGlobalVariable(\"amount\",json.amount);",
+							"",
+							"//断言",
+							"tests[\"errCode is 00\"] = json.errCode === \"00\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "OPEN-ACCESS-TOKEN AccessToken=\"{{accessToken}}\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"merchantCode\":\"911000000000000\",\n\t\"terminalCode\":\"00000911\",\n\t\"merchantOrderId\":\"1107818991453\",\n\t\"originalOrderId\":\"20200401143858000030963690\",\n\t\"refundRequestId\":\"{{refundRequestId}}\",\n\t\"transactionAmount\":100\n}"
+				},
+				"url": {
+					"raw": "http://58.247.0.18:29015/v2/poslink/transaction/refund",
+					"protocol": "http",
+					"host": [
+						"58",
+						"247",
+						"0",
+						"18"
+					],
+					"port": "29015",
+					"path": [
+						"v2",
+						"poslink",
+						"transaction",
+						"refund"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
