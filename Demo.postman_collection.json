@@ -1,0 +1,48 @@
+{
+	"info": {
+		"_postman_id": "4e967e43-fca0-4dbe-ba9e-657e76efb96d",
+		"name": "Demo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Pm_test",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "bd2ec25a-db55-405f-98f5-2d85c03ab36d",
+						"exec": [
+							"console.log(pm.info.eventName)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://infinity-api.infinitynewtab.com/baidu_suggestion?keyword=test",
+					"protocol": "https",
+					"host": [
+						"infinity-api",
+						"infinitynewtab",
+						"com"
+					],
+					"path": [
+						"baidu_suggestion"
+					],
+					"query": [
+						{
+							"key": "keyword",
+							"value": "test"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
